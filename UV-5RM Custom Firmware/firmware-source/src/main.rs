@@ -9,7 +9,7 @@ mod drivers;
 mod flash_map;
 mod hal;
 mod ui;
-
+pub mod mdc1200c;
 use at32f421_pac as pac;
 use core::fmt::Write;
 use cortex_m_rt::entry;
