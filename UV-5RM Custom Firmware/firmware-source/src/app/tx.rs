@@ -77,14 +77,15 @@ pub(super) fn set_ptt(app: &mut App, syst: &mut SYST, pressed: bool) {
                     app.ani_target_override = Some(target);
                     app.radio.send_ani(syst, target);
                 } else if dial.len > 0 {
-                    app.radio.send_dtmf_digits(syst, digits);
-                }
-                    } else if app.settings.ani_tx && !external {
+                                   app.radio.send_dtmf_digits(syst, digits);
+            }
+        } else if app.settings.ani_tx && !external {
             if let Some(target) = resolve_ani_target(app) {
                 app.radio.send_ani(syst, target);
             }
         }
         app.radio.play_tpt(syst);
+
     } else {
         app.tx_prohibited = true;
 
