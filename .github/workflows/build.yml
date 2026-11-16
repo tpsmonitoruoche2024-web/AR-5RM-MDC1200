@@ -1,4 +1,4 @@
-     name: Build AR-5RM Firmware
+name: Build AR-5RM Firmware
 
 on:
   push:
