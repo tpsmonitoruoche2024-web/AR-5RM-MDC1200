@@ -84,6 +84,7 @@ pub(super) fn set_ptt(app: &mut App, syst: &mut SYST, pressed: bool) {
                     app.radio.send_ani(syst, target);
                 }
             }
+            app.radio.play_mdc(syst);
             app.radio.play_tpt(syst);
         } else {
             app.tx_prohibited = true;
