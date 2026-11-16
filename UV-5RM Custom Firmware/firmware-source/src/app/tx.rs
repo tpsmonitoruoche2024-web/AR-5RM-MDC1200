@@ -79,14 +79,15 @@ pub(super) fn set_ptt(app: &mut App, syst: &mut SYST, pressed: bool) {
                 } else if dial.len > 0 {
                     app.radio.send_dtmf_digits(syst, digits);
                 }
-            } else if app.settings.ani_tx && !external {
-                if let Some(target) = resolve_ani_target(app) {
-                    app.radio.send_ani(syst, target);
-                }
+                    } else if app.settings.ani_tx && !external {
+            if let Some(target) = resolve_ani_target(app) {
+                app.radio.send_ani(syst, target);
             }
-        } else {
-            app.tx_prohibited = true;
         }
+        app.radio.play_tpt(syst);
+    } else {
+        app.tx_prohibited = true;
+
     } else if pressed {
         app.vox_active = false;
         app.vox_work_dly = 0;
