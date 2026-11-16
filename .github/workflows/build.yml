@@ -1,0 +1,35 @@
+name: Build AR-5RM Firmware
+
+on:
+  push:
+    branches: [ ar-5rm-nrf, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain & ARM target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabi
+          components: llvm-tools-preview
+
+      - name: Install cargo-binutils
+        run: cargo install cargo-binutils
+
+      - name: Build firmware
+        working-directory: ./AR-5RM Firmware
+        run: |
+          cargo build --release
+          cargo objcopy --release -- -O binary firmware.bin
+
+      - name: Upload compiled firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: AR-5RM-MDC1200REAL
+          path: ./AR-5RM Firmware/firmware.bin
