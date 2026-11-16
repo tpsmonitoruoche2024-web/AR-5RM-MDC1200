@@ -592,6 +592,25 @@ impl<'a> Radio<'a> {
         self.play_tone_sequence(syst, &TPT_TONES, false, true);
     }
 
+    pub fn play_mdc(&mut self, syst: &mut SYST) {
+        let mut packet = [0u8; 19];
+        // OpCode 0x01 = PTT ID, Arg 0x80 = Pre-PTT, Hardcoded Unit ID = 0xB469 (B469)
+        crate::mdc1200c::encode_single_packet(&mut packet, 0x01, 0x80, 0xB469);
+
+        // Standard 5-byte preamble + 7 extra bytes (+7 TrueMDC wobble preamble = 12 bytes / 96 bits)
+        let preamble: [u8; 12] = [0xAA; 12];
+
+        for byte in preamble.iter().chain(packet.iter()) {
+            for bit in (0..8).rev() {
+                // 1200 baud MSK: bit 1 = 1200 Hz (120), bit 0 = 1800 Hz (180), sidetone = true
+                let hz_div_10 = if ((byte >> bit) & 1) != 0 { 120 } else { 180 };
+                self.fd6818.tx_single_tone_on(syst, hz_div_10, true);
+                delay::us(syst, 833);
+            }
+        }
+
+        self.fd6818.tx_single_tone_off(syst);
+    }
 
     
 
