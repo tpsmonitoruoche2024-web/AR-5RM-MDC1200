@@ -609,7 +609,7 @@ impl<'a> Radio<'a> {
             }
         }
 
-        self.fd6818.tx_single_tone_off(syst);
+        self.fd6818.tx_single_tone_off(syst, true);
     }
 
     
