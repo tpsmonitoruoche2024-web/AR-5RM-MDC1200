@@ -13,6 +13,8 @@ const SEND_TAIL_HOLD_MS: u32 = 300;
 const BEEP_TONES: [(u16, u32); 1] = [(100, 60)];
 /// 1000Hz/80ms, 850Hz/80ms
 const ROGER_TONES: [(u16, u32); 2] = [(100, 80), (85, 80)];
+/// 1570Hz/40ms, 1050Hz/40ms, 1570Hz/40ms, 1320Hz/40ms
+const TPT_TONES: [(u16, u32); 4] = [(157, 40), (105, 40), (157, 40), (132, 40)];
 
 const TONE_SETTLE_MS: u32 = 2;
 
@@ -586,6 +588,12 @@ impl<'a> Radio<'a> {
     fn play_roger_tone(&mut self, syst: &mut SYST) {
         self.play_tone_sequence(syst, &ROGER_TONES, true, false);
     }
+    pub fn play_tpt(&mut self, syst: &mut SYST) {
+        self.play_tone_sequence(syst, &TPT_TONES, false, true);
+    }
+
+
+    
 
     /// Plays a boot-tune melody: `(tone_index, duration)` pairs,
     /// `tone_index` 0 = rest (silence for `duration` periods), 1..=45
