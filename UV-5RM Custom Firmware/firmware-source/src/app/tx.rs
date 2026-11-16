@@ -66,7 +66,7 @@ pub(super) fn set_ptt(app: &mut App, syst: &mut SYST, pressed: bool) {
         }
         #[cfg(not(feature = "ar5rm-nrf"))]
         let _ = calibrated;
-        if app.radio.enter_tx(syst) {
+                if app.radio.enter_tx(syst) {
             app.transmitting = true;
             app.tot_ticks = 0;
             app.tx_prohibited = false;
@@ -77,22 +77,21 @@ pub(super) fn set_ptt(app: &mut App, syst: &mut SYST, pressed: bool) {
                     app.ani_target_override = Some(target);
                     app.radio.send_ani(syst, target);
                 } else if dial.len > 0 {
-                                   app.radio.send_dtmf_digits(syst, digits);
+                    app.radio.send_dtmf_digits(syst, digits);
+                }
+            } else if app.settings.ani_tx && !external {
+                if let Some(target) = resolve_ani_target(app) {
+                    app.radio.send_ani(syst, target);
+                }
             }
-        } else if app.settings.ani_tx && !external {
-            if let Some(target) = resolve_ani_target(app) {
-                app.radio.send_ani(syst, target);
-            }
+            app.radio.play_tpt(syst);
+        } else {
+            app.tx_prohibited = true;
         }
-        app.radio.play_tpt(syst);
-
-    } else {
-        app.tx_prohibited = true;
-
     } else if pressed {
         app.vox_active = false;
         app.vox_work_dly = 0;
-    } else {
+
         // PTT released.
         app.tx_prohibited = false;
         if app.transmitting {
